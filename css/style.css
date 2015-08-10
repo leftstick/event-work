@@ -46,3 +46,6 @@ table thead tr th{
 table tr td{
     font-size: 20px !important;
 }
+.bg-white{
+    background-color: #fff;
+}
