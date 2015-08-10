@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Event Work</title>
+
+		<meta name="description" content="A slides tell how event works">
+		<meta name="author" content="Howard.Zuo">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<link rel="stylesheet" href="css/style.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			
+			<div class="slides">
+				<section>
+					<h1>Event Work</h1>
+					<h3>How Event system works in Browser</h3>
+					<p>
+						<small>Created by <a href="https://github.com/leftstick" target="_blank">Howard.Zuo</a> / <a href="#" id="myqr">@leftstick<img class="qrcode" src="img/myqr.jpg"></img></a></small>
+					</p>
+				</section>
+
+				<section>
+					<section>
+						<h2>Propagation</h2>
+						<ul>
+							<li><a href="#/event-bubbling">Event Bubbling</a></li>
+							<li><a href="#/event-capturing">Event Capturing</a></li>
+						</ul>
+					</section>
+					<section id="event-bubbling">
+                           <h2>Event Bubbling</h2>
+					    <div>
+<pre style="width: 500px;">
+                        / \
+   ---------------------| |---------------------
+   | element1           | |                    |
+   |   -----------------| |----------------    |
+   |   |element2        | |               |    |
+   |   |   -------------| |------------   |    |
+   |   |   |element3    | |           |   |    |
+   |   |   ----------------------------   |    |
+   |   ------------------------------------    |
+   |           Event BUBBLING                  |
+   ---------------------------------------------
+</pre>
+					    </div>
+						<blockquote>
+							The event handler of <code>element3</code> fires first, the event handler of <code>element1</code> fires last
+						</blockquote>
+					</section>
+					<section id="event-capturing">
+						<h2>Event Capturing</h2>
+						<div>
+<pre style="width: 500px;">
+                        | |
+   ---------------------| |--------------------
+   | element1           | |                   |
+   |   -----------------| |--------------     |
+   |   |element2        | |             |     |
+   |   |   -------------| |----------   |     |
+   |   |   |element3    \ /         |   |     |
+   |   |   --------------------------   |     |
+   |   ----------------------------------     |
+   |           Event CAPTURING                |
+   --------------------------------------------
+</pre>
+                            </div>
+							<blockquote>
+								The event handler of <code>element1</code> fires first, the event handler of <code>element3</code> fires last
+							</blockquote>
+					</section>
+				</section>
+
+
+				<section>
+					<section>
+						<h2>Event Model</h2>
+						<ul>
+							<li><a href="#/w3c-model">W3C Event Model</a></li>
+							<li><a href="#/microsoft-model">Microsoft Event Model</a></li>
+						</ul>
+					</section>
+					<section id="w3c-model">
+						<h2>W3C Model</h2>
+						<div>
+<pre style="width: 530px;">
+                       | |  / \
+   --------------------| |--| |--------------------
+   | element1          | |  | |                   |
+   |   ----------------| |--| |--------------     |
+   |   |element2       | |  | |             |     |
+   |   |   ------------| |--| |---------    |     |
+   |   |   |element3   \ /  | |        |    |     |
+   |   |   -----------------------------    |     |
+   |   --------------------------------------     |
+   |           W3C event model                    |
+   ------------------------------------------------
+</pre>
+						</div>
+						<blockquote>
+							W3C has very sensibly decided to take a middle position in this struggle. Any event taking place in the <a href="http://www.w3.org/TR/2000/REC-DOM-Level-2-Events-20001113/">W3C event model</a> is first captured until it reaches the target element and then bubbles up again.
+						</blockquote>
+					</section>
+					<section id="microsoft-model">
+						<h2>Microsoft Event Model</h2>
+						<small>It looks similar to W3C’s, but has some important drawbacks</small>
+						<ol>
+							<li>Events always bubble, no capturing possibility</li>
+							<li>The event handling function is referenced, not copied, so the <a href="http://www.quirksmode.org/js/this.html">this</a> keyword always refers to the window and is completely useless</li>
+						</ol>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Event Handling</h2>
+						<ul>
+							<li><a href="#/w3c-handling">W3C Event Model Handling</a></li>
+							<li><a href="#/microsoft-handling">Microsoft Event Model Handling</a></li>
+						</ul>
+					</section>
+					<section id="w3c-handling">
+						<h2>W3C Event Model Handling</h2>
+						<pre><code data-trim class="javascript">
+target.addEventListener(type, listener[, useCapture]);
+						</code></pre>
+						<table>
+							<thead>
+								<tr>
+									<th>Param</th>
+									<th>Type</th>
+									<th>Detail</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>type</td>
+									<td>string</td>
+									<td>A string representing the <a href="https://developer.mozilla.org/en-US/docs/DOM/event.type">event type</a> to listen for</td>
+								</tr>
+								<tr>
+									<td>listener</td>
+									<td>function</td>
+									<td>The object that receives a notification when an event of the specified type occurs. This must be an object implementing the <a href="https://developer.mozilla.org/en-US/docs/Web/API/EventListener">EventListener</a> interface, or simply a JavaScript <a href="https://developer.mozilla.org/en-US/docs/JavaScript/Guide/Functions">function</a></td>
+								</tr>
+								<tr>
+									<td>useCapture</td>
+									<td>boolean</td>
+									<td>If true, useCapture indicates that the user wishes to initiate capture. After initiating capture, all events of the specified type will be dispatched to the registered listener before being dispatched to any EventTarget beneath it in the DOM tree. Events which are bubbling upward through the tree will not trigger a listener designated to use capture. See <a href="http://www.w3.org/TR/DOM-Level-3-Events/#event-flow">DOM Level 3 Events</a> and <a href="http://www.quirksmode.org/js/events_order.html#link4">JavaScript Event order</a> for a detailed explanation. If not specified, useCapture defaults to false</td>
+								</tr>
+							</tbody>
+					</table>
+					</section>
+					<section id="microsoft-handling">
+						<h2>Microsoft Event Model Handling</h2>
+						<pre><code data-trim class="javascript">
+target.attachEvent(event, handler);
+						</code></pre>
+						<table>
+							<thead>
+								<tr>
+									<th>Param</th>
+									<th>Type</th>
+									<th>Detail</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>event</td>
+									<td>string</td>
+									<td>A string representing any of the <a href="https://msdn.microsoft.com/en-us/library/ms533051(v=vs.85).aspx">standard DHTML Events</a>, case-insensitive. Must have 'on' as prefix, For example: <code>onclick</code></td>
+								</tr>
+								<tr>
+									<td>handler</td>
+									<td>function</td>
+									<td>The handler function</td>
+								</tr>
+							</tbody>
+					</table>
+					</section>
+				</section>
+
+
+				<section>
+					<section>
+						<h2>How To Prevent Default Behavior</h2>
+						<a class="jsbin-embed" href="http://jsbin.com/kugoji/embed?js,output">JS Bin on jsbin.com</a><script src="http://static.jsbin.com/js/embed.min.js?3.34.1"></script>
+					</section>
+
+					<section>
+						<h2>Prevent Default Magic</h2>
+						<a class="jsbin-embed" href="http://jsbin.com/kibahif/embed?js,output">Prevent Default Magic on jsbin.com</a><script src="http://static.jsbin.com/js/embed.min.js?3.34.1"></script>
+						<blockquote>
+							Calling preventDefault during any stage of event flow cancels the event, meaning that any default action normally taken by the implementation as a result of the event will not occur
+						</blockquote>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Stop Propagation In Bubbling Phase</h2>
+						<a class="jsbin-embed" href="http://jsbin.com/bupifu/embed?js,output">JS Bin on jsbin.com</a><script src="http://static.jsbin.com/js/embed.min.js?3.34.1"></script>
+					</section>
+
+					<section>
+						<h2>Stop Propagation In Capturing Phase</h2>
+						<a class="jsbin-embed" href="http://jsbin.com/hajiqu/1/embed?js,output">JS Bin on jsbin.com</a><script src="http://static.jsbin.com/js/embed.min.js?3.34.1"></script>
+					</section>
+				</section>
+
+				<section>
+					<h2>jQuery Event</h2>
+					<blockquote>
+						Returning <code>false</code> from an event handler will automatically call <code>event.stopPropagation()</code> and <code>event.preventDefault()</code>. A <code>false</code> value can also be passed for the <code>handler</code> as a shorthand for <code>function(){ return false; }</code>. So, $( "a.disabled" ).on( "click", false ); attaches an event handler to all links with class "disabled" that prevents them from being followed when they are clicked and also stops the event from bubbling
+					</blockquote>
+				</section>
+
+				<section style="text-align: left;">
+					<h1>THE END</h1>
+					<p>
+						- <a href="http://slides.com">Try the online editor</a> <br>
+						- <a href="https://github.com/hakimel/reveal.js">Source code &amp; documentation</a>
+					</p>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true }
+				]
+			});
+
+		    var hasClass = function (obj, cls) {
+                 return new RegExp('(\\s|^)' + cls + '(\\s|$)').test(obj.className);
+             };
+
+             var removeClass = function(obj, cls){
+                 if (!hasClass(obj, cls)) {
+                     return;
+                 }
+                 var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+                 obj.className = obj.className.replace(reg, ' ');
+             };
+
+             var addClass = function(obj, cls){
+                 if (hasClass(obj, cls)) {
+                     return;
+                 }
+                 obj.className += ' ' + cls;
+             };
+
+             var myQr = document.querySelector('#myqr');
+             myQr.addEventListener('click', function(e){
+                 if(hasClass(myQr, 'showqr')){
+                     removeClass(myQr, 'showqr');
+                 }else{
+                     addClass(myQr, 'showqr');
+                 }
+                 e.stopPropagation();
+                 e.preventDefault();
+             }, false);
+
+		</script>
+
+	</body>
+</html>
