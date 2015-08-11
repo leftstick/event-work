@@ -244,6 +244,9 @@ target.attachEvent(event, handler);
 					<blockquote>
 						Returning <code>false</code> from an event handler will automatically call <code>event.stopPropagation()</code> and <code>event.preventDefault()</code>. A <code>false</code> value can also be passed for the <code>handler</code> as a shorthand for <code>function(){ return false; }</code>. So, $( "a.disabled" ).on( "click", false ); attaches an event handler to all links with class "disabled" that prevents them from being followed when they are clicked and also stops the event from bubbling
 					</blockquote>
+					<div style="text-align: right;">
+						—<a href="http://api.jquery.com/on/#event-handler" target="_blank">Event Handler</a>
+					</div>
 				</section>
 
 				<section>
